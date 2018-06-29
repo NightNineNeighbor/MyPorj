@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="userMapper">
+	<select id="idCheck" parameterType="string" resultType="string">
+		select id from users where id=#{id} and rownum=1
+	</select>
+	<insert id="join" parameterType="user">
+		insert into users(id, irum, pwd, email, birth_date, originalFileName, savedFileName)
+		values(#{id}, #{irum}, #{pwd}, #{email}, #{birthDate}, 
+		#{originalFileName, jdbcType=VARCHAR}, #{savedFileName, jdbcType=VARCHAR})
+	</insert>
+	<insert id="authorityForJoin" parameterType="string">
+		insert into authorities(id, authority) values(#{id}, 'ROLE_USER')
+	</insert>
+	
+	<select id="read" parameterType="string" resultType="user">
+		select id, irum, pwd, email, birth_date birthDate, savedFileName from users where id=#{id} and rownum=1
+	</select>
+	<update id="update" parameterType="user">
+		update users set irum=#{irum}, email=#{email}, birth_date=#{birthDate} where id=#{id}and rownum=1
+	</update>
+	
+	<delete id="deleteUser" parameterType="string">
+		delete from users where id=#{id} and rownum=1
+	</delete>
+	<delete id="deleteAuthority" parameterType="string">
+		delete from authorities where id=#{id}
+	</delete>
+	
+	<select id="getSavedFileName" parameterType="string">
+		select savedFileName from users where originalFileName=#{originalFileName} and rownum=1
+	</select>
+	
+	<select id="findId" parameterType="map" resultType="string">
+		select id from users where irum=#{irum} and email=#{email} and rownum=1
+	</select>
+	
+	<select id="findPwd" parameterType="map" resultType="string">
+		select id from users where id=#{id} and email=#{email} and rownum=1
+	</select>
+</mapper>

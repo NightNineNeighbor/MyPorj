@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardMapper">
+	<select id="count" resultType="int">
+		<!-- index_ffs를 인덱스를 블록단위로 읽는다
+			 단 뒤에 컬럼이 인덱스에 해당하는 컬럼만 와야 적용된다
+		 -->
+		select /*+ index_ffs(board board_pk_bno) */ count(bno) from board		
+	</select>
+	
+	<select id="list" parameterType="int" resultType="board">
+	<![CDATA[
+	select * from
+		(select rownum rnum, b.* from 
+			(select /*+ index_desc(board board_pk_bno) */ bno, id, title, write_date writeDate, 
+			read_cnt readCnt from board) b
+		where rownum<=#{endRowNum}) 
+	where rnum>=#{startRowNum}
+	]]>
+	</select>
+	
+	<update id="increaseReadCnt" parameterType="int">
+		update board set read_cnt=read_cnt+1 where bno=#{bno} and rownum=1
+	</update>
+	<select id="read" resultType="board" parameterType="int">
+		select bno, id, title, content, write_date writeDate, read_cnt readCnt
+		from board where bno=#{bno} and rownum=1
+	</select>
+	
+	<insert id="write" parameterType="board">
+		<!-- selectKey로 생성한 bno는 어디에 담겨있나? board -->
+		<selectKey keyProperty="bno" order="BEFORE" resultType="int">
+			select board_seq.nextval from dual 
+		</selectKey>
+		insert into board(bno, id, title, content, write_date, read_cnt)
+		values(#{bno}, #{id}, #{title}, #{content}, sysdate, 0)
+	</insert>
+	
+	<update id="update" parameterType="board">
+		update board set title=#{title}, content=#{content} where bno=#{bno} and rownum=1
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		delete from board where bno=#{bno} and rownum=1
+	</delete>
+</mapper>
+
+
+
+
+
+
+
