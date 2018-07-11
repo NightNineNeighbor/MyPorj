@@ -11,6 +11,7 @@
 			/WEB-INF/spring/security-context.xml
 		</param-value>
 	</context-param>
+	<!-- /WEB-INF/spring/security-context.xml -->
 	
 	<!-- Creates the Spring Container shared by all Servlets and Filters -->
 	<listener>
@@ -25,7 +26,7 @@
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
+ 
 	<!-- Processes application requests -->
 	<servlet>
 		<servlet-name>appServlet</servlet-name>
@@ -41,5 +42,10 @@
 		<servlet-name>appServlet</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-
+	<!-- 
+	<error-page>
+		<error-code>404</error-code>
+		<location>/board/main</location>
+	</error-page>
+ -->
 </web-app>

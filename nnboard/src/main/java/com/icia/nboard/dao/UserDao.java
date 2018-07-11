@@ -16,6 +16,9 @@ public class UserDao {
 	public int create(User user) {
 		return tpl.insert("userMapper.create", user);
 	}
+	public int createAuth(String id) {
+		return tpl.insert("userMapper.createAuth",id);
+	}
 
 	public User read(String id) {
 		return tpl.selectOne("userMapper.read", id);

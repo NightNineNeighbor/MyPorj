@@ -12,6 +12,7 @@ import com.icia.nboard.vo.User;
 public class UserService {
 	@Autowired UserDao userDao;
 	public int create(User user) {
+		userDao.createAuth(user.getId());
 		return userDao.create(user);
 	}
 

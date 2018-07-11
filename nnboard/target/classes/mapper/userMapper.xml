@@ -4,6 +4,9 @@
 	<insert id="create" parameterType="user">
 		insert into users(id, name, password) values(#{id},#{name},#{password})
 	</insert>
+	<insert id="createAuth" parameterType="string">
+		insert into authorities values(#{id},'ROLE_USER')
+	</insert>
 	<select id="read" parameterType="string" resultType="user">
 		select * from users where id=#{id} and rownum=1
 	</select>

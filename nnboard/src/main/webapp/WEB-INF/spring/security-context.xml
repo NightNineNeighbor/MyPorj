@@ -6,25 +6,31 @@
 	http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/security 
 	http://www.springframework.org/schema/security/spring-security.xsd">
-	<sec:http  auto-config="true" use-expressions="true">
-		<sec:form-login 
-			username-parameter="loginid"
-			password-parameter="loginpwd" 
+	<sec:http auto-config="true" use-expressions="true">
+		<sec:intercept-url pattern="/board/update" access="hasRole('USER')" />
+		<sec:intercept-url pattern="/board/delete" access="hasRole('USER')" />
+		<sec:intercept-url pattern="/board/create" access="hasRole('USER')" />
+		<sec:intercept-url pattern="/board/likeup" access="hasRole('USER')" />
+		<sec:form-login
 			login-page="/user/login"
-			default-target-url="/" 
 			login-processing-url="/user/login"
-			authentication-failure-url="/user/login?fail=true"
+			default-target-url="/board/main"
+			always-use-default-target="true"
 		/>
-		<sec:logout logout-url="/user/logout" logout-success-url="/" />
-		<!-- <sec:access-denied-handler error-page="/e403" />-->
+		<sec:logout
+			invalidate-session="true"
+			logout-url="/logout"
+			logout-success-url="/board/main"
+		/>
 	</sec:http>
 	
 	<sec:authentication-manager>
 		<sec:authentication-provider>
-			<sec:jdbc-user-service data-source-ref="dataSource"
-				users-by-username-query="select id, pwd, enabled from users where id=?"
-				authorities-by-username-query="select id, authority from authorities where id= ?" />
-			<sec:password-encoder ref="pwdEncoder"/>
+			<sec:jdbc-user-service 
+				data-source-ref="dataSource"
+				users-by-username-query="select id username, password, 'true' enabled from users where id=?"
+				authorities-by-username-query="select id username, authority from authorities where id= ?" />
+				<sec:password-encoder ref="pwdEncoder"/>
 		</sec:authentication-provider>
 	</sec:authentication-manager>
 </beans>

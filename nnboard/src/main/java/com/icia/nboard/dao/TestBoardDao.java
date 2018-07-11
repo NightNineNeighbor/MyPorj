@@ -4,7 +4,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +48,30 @@ public class TestBoardDao {
 		dao.update(board);
 		
 		assertThat(dao.read(board.getBno()).getTitle().equals("updatedTitle"),is(true));
+	}
+	
+	@Test
+	@Transactional
+	public void LikeUPTest() {
+		List<Board> list = dao.getAll();
+		board = list.get(0);
+		int origin = board.getLikeCnt();
+		
+		dao.likeCntUp(board.getBno());
+		
+		
+		assertThat(dao.read(board.getBno()).getLikeCnt()-1,is(origin));
+	}
+	
+	@Test
+	@Transactional
+	public void putLikeUpListTest() {
+		Map<String, String> map = new HashMap<>();
+		map.put("bno", "3");
+		map.put("id", "id");
+		dao.putLikeUpList(map);
+		
+		assertThat(dao.wasLikeUp(map).equals("id"), is(true));
 	}
 
 }

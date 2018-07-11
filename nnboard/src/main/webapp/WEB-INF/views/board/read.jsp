@@ -5,8 +5,53 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>Insert title here!</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $("#ss").click(function(){
+       $("#target").text("hihihihi");
+       
+       var token = $("meta[name='_csrf']").attr("content");
+       var header = $("meta[name='_csrf_header']").attr("content");
+       $.ajax({
+			url: "/nboard/board/ajaxlikeup",
+			type: "post",
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader(header, token);
+		    },
+			data: /* "${_csrf.parameterName}=" + "${_csrf.token}" + "& */"bno=" + "${board.bno }",
+			success: function(result) {
+				if(result=="notLiked")
+					$("#likeCnt").text( Number($("#likeCnt").text()) + 1 );
+					
+			}
+		});
+    });
+});
+</script>
 </head>
+<body>
+
+<a href="/nboard/board/main">main</a>
+<button id="ss">ResponseEntity</button>
+<p id="target"></p>
+
+
+
+
+<form action="/nboard/board/likeup" method="post">
+	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+	<input type="hidden" name="bno" value="${board.bno }">
+	<input type="submit" value="likeUp">
+</form>
+
+<p>writer : ${board.writer}</p>
+<p>user : ${username }</p>
+<c:if test="${board.writer eq username}">
+
 <p>UPDATE</p>
 	<form action="/nboard/board/update" method="POST">
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
@@ -15,13 +60,16 @@
 		제목 : <input type="text" name="title">
 		<input type="submit">
 	</form>
+	
 	<p>DELETE</p>
 	<form action="/nboard/board/delete" method="POST">
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 		<input type="hidden" name="bno" value="${board.bno }"> 
 		<input type="submit">
 	</form>
-<body>
+</c:if>
+
+
 	<table>
 		<tr>
 			<th>글번호</th>
@@ -32,12 +80,12 @@
 			<th>좋아요</th>
 		</tr>
 		<tr>
-			<td>${board.bno }</td>
+			<td id="bno">${board.bno }</td>
 			<td>${board.title }</td>
 			<td>${board.writer }</td>
 			<td>${board.writeDate }</td>
 			<td>${board.readCnt }</td>
-			<td>${board.likeCnt }</td>
+			<td id="likeCnt">${board.likeCnt }</td>
 		</tr>
 	</table>
 	<p>내용</p>

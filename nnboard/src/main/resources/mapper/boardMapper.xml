@@ -8,6 +8,9 @@
 	<select id="read" parameterType="int" resultType="board">
 		select bno, writer, title, content, write_date writeDate, read_cnt readCnt, like_cnt likeCnt from board where bno=#{bno} and rownum=1
 	</select>
+	<update id="readCntUp" parameterType="int">
+		update board set read_cnt=((select read_cnt from board where bno=#{bno})+1) where bno=#{bno}
+	</update>
 	<update id="update" parameterType="board">
 		update board set title=#{title}, content=#{content} where bno=#{bno}
 	</update>
@@ -15,6 +18,16 @@
 		delete board where bno=#{bno}
 	</delete>
 	<select id="getAll" resultType="board">
-		select bno, writer, title, content, write_date writeDate, read_cnt readCnt, like_cnt likeCnt from board
+		select bno, writer, title, content, write_date writeDate, read_cnt readCnt, like_cnt likeCnt from board order by bno desc
 	</select>
+	<select id="wasLikeUp" parameterType="map" resultType="string">
+		select id from like_up_list where bno=#{bno} and id=#{id} and rownum=1
+	</select>
+	<insert  id="putLikeUpList" parameterType="map">
+		insert into like_up_list values(#{id},#{bno})
+	</insert>
+	<update id="likeCntUp" parameterType="int">
+		update board set like_cnt=((select like_cnt from board where bno=#{bno})+1) where bno=#{bno}
+	</update>
+	
 </mapper>

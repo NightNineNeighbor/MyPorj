@@ -1,6 +1,7 @@
 package com.icia.nboard.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import com.icia.nboard.vo.User;
 @Controller
 public class UserController {
 	@Autowired UserService userService;
+	@Autowired PasswordEncoder encoder;
 	
 	@GetMapping("user/main")
 	public String main(Model model) {
@@ -21,7 +23,7 @@ public class UserController {
 	
 	@PostMapping("/user/create")
 	public String join(String id, String password, String name) {
-		userService.create(new User(id, name, password));
+		userService.create(new User(id, name, encoder.encode(password)));
 		return "redirect:main";
 	}
 
@@ -35,6 +37,11 @@ public class UserController {
 	public String delete(String id) {
 		userService.delete(id);
 		return "redirect:main";
+	}
+	
+	@GetMapping("/user/login")
+	public String login() {
+		return "user/login";
 	}
 
 }

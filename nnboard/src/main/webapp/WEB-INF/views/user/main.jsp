@@ -8,6 +8,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+	<a href="/nboard/board/main">main</a>
 	<p>CREATE</p>
 	<form action="/nboard/user/create" method="POST">
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
