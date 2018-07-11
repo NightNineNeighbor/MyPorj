@@ -4,5 +4,6 @@
 	<typeAliases>
 		<typeAlias alias="user" type="com.icia.nboard.vo.User" />
 		<typeAlias alias="board" type="com.icia.nboard.vo.Board" />
+		<typeAlias alias="reply" type="com.icia.nboard.vo.Reply" />
 	</typeAliases>
 </configuration>

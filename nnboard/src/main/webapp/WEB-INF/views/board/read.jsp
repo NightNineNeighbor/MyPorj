@@ -11,11 +11,14 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
 $(document).ready(function(){
+	var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+	
     $("#ss").click(function(){
        $("#target").text("hihihihi");
        
-       var token = $("meta[name='_csrf']").attr("content");
-       var header = $("meta[name='_csrf_header']").attr("content");
+       
+       
        $.ajax({
 			url: "/nboard/board/ajaxlikeup",
 			type: "post",
@@ -29,6 +32,37 @@ $(document).ready(function(){
 					
 			}
 		});
+    });
+    
+    var getAllList = function(){
+   		$.getJSON("/nboard/reply/${board.bno}", function(data){
+    		str = "";
+    		$(data).each(
+    			function(){
+    				str += "<p>" + "rno: " + this.rno +
+    				" writer : " + this.writer +
+    				" content :  "+this.content;    			
+    			}		
+    		)
+    		$("#reply").html(str);
+    	});
+    }
+    getAllList();
+    
+    $("#createReply").click(function(){
+    	$.ajax({
+    		type:'post',
+    		url:'/nboard/reply/${board.bno}',
+    		beforeSend: function (xhr) {
+				xhr.setRequestHeader(header, token);
+		    },
+    		data: "content=" + $("#content").val(),
+    		success: function(result) {
+    			getAllList();
+    			alert(result);
+    			$("#content").val("")
+    		}
+    	})
     });
 });
 </script>
@@ -90,5 +124,11 @@ $(document).ready(function(){
 	</table>
 	<p>내용</p>
 	<p>${board.content }<p>
+	
+	
+	<div id="reply"></div>
+	댓글 작성 : <input type='text' id='content'>
+	<button id="createReply">댓글 작성</button>
+	
 </body>
 </html>
