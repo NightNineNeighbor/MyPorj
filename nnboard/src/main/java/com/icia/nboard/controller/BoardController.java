@@ -12,7 +12,10 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icia.nboard.service.BoardService;
@@ -36,12 +39,17 @@ public class BoardController {
 		return "redirect:main";
 	}
 	
-	
 	@GetMapping("/board/main")
 	public String main(Model model, Principal principal) {
 		setUsername(model, principal);
 		model.addAttribute("list", boardService.getAll());
 		return "board/main";
+	}
+	@GetMapping(path = "/board/articles/{startRowNum}/{endRowNum}")
+	public String ariticles(@PathVariable int startRowNum,@PathVariable int endRowNum, Model model) {
+		model.addAttribute("list",boardService.specificRead(startRowNum, endRowNum));
+		model.addAttribute("articleAmount",boardService.count());
+		return "board/articles";
 	}
 	
 	@GetMapping("/board/read")

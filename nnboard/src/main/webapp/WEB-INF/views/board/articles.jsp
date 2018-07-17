@@ -5,25 +5,54 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>hb
+<head>
 <title>Insert title here</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
-<body>
-	<jsp:include page="/WEB-INF/views/template/nav.jsp"/>
-	<p>${username}님 안녕하세요!</p>
-	<p>CREATE</p>
-	<form action="/nboard/board/create" method="POST">
-		내용 : <input type="text" name="content">
-		제목 : <input type="text" name="title">
-		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-		<input type="submit">
-	</form>
+<script>
+	$(function(){
+		var countOfBoard = "${articleAmount}";
+		var pageNo = location.pathname.split("/")[5] / 10;
+		var endPageNo = Math.floor( (countOfBoard - 1)/10 +1 );
+		var startPageNo = pageNo-(pageNo-1)%5;
+		console.log(endPageNo)
+		console.log(startPageNo)
+			
+		var text;
+		if(startPageNo>5){
+			text= "<li class='waves-effect'><a href='/nboard/board/articles/"+ ((startPageNo-1)*10-9) +"/"+ (startPageNo-1)*10 +"'>&lt</a></li>";
+			$("#target").append(text);
+		}
+			
+		for(var i = startPageNo; i < startPageNo + 5 && i <= endPageNo; i++){
+			text= '<li class="waves-effect"><a href="/nboard/board/articles/'+ (i*10-9) +'/'+ (i*10) +'">'+ i + '</a></li>';
+			if(i == pageNo){
+				text= '<li class="active"><a href="/nboard/board/articles/'+ (i*10-9) +'/'+ (i*10) +'">'+ i + '</a></li>';
+			}
+			$("#target").append(text);
+		}
+			
+		if(endPageNo >= startPageNo+5){
+			text= "<li class='waves-effect'><a href='/nboard/board/articles/"+ ((startPageNo+5)*10-9) +"/"+ (startPageNo+5)*10 +"'>&gt</a></li>";
+			$("#target").append(text);
+		}
+	})
+</script>
 
+</head>
+<jsp:include page="/WEB-INF/views/template/nav.jsp"/>
+<body>
+	<form action="/nboard/logout" method="post">
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+		<input type="submit" value="form Logout">
+	</form>
+	<a href="/nboard/user/login">login</a>
+	<a href="/nboard/user/main">join</a>
+	<p>${username}님 안녕하세요!</p>
+	<%-- <c:import url="../template/header.jsp"></c:import> --%>
 
 	<table class="highlight" style="width:70%; text-align:center; margin:0 auto;">
 		<colgroup>
@@ -54,16 +83,10 @@
 		</c:forEach>
 	</table>
 	
-	<div class="container">
-    <ul class="pagination">
-        <li class="disabled"><a href="#!"><i class="mdi-navigation-chevron-left"> &lt </i></a></li>
-        <li class="active"><a href="#!">1</a></li>
-        <li class="waves-effect"><a href="#!">2</a></li>
-        <li class="waves-effect"><a href="#!">3</a></li>
-        <li class="waves-effect"><a href="#!">4</a></li>
-        <li class="waves-effect"><a href="#!">5</a></li>
-        <li class="waves-effect"><a href="#!"><i class="mdi-navigation-chevron-right"> &gt </i></a></li>
-    </ul>          
-</div>
+	<div id="pagination">
+		<ul id="target" class="pagination">
+    	</ul>  
+	</div>
+	
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.icia.nboard.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ public class BoardDao {
 	public Board read(int bno) {
 		return tpl.selectOne("boardMapper.read",bno);
 	}
+	
 	public int readCntUp(int bno) {
 		return tpl.update("boardMapper.readCntUp",bno);
 	}
@@ -32,6 +34,15 @@ public class BoardDao {
 	public List<Board> getAll(){
 		return tpl.selectList("boardMapper.getAll");
 	}
+	public List<Board> specificRead(int startRowNum, int endRowNum){
+		Map<String, Integer> map = new HashMap<>();
+		map.put("startRowNum", startRowNum);
+		map.put("endRowNum", endRowNum);
+		return tpl.selectList("boardMapper.specificRead",map);
+	}
+	public int count() {
+		return tpl.selectOne("boardMapper.count");
+	}
 	public String wasLikeUp(Map<String, String> map) {
 		return tpl.selectOne("boardMapper.wasLikeUp", map);
 	}
@@ -40,6 +51,5 @@ public class BoardDao {
 	}
 	public int likeCntUp(int bno) {
 		return tpl.update("boardMapper.likeCntUp",bno);
-		
 	}
 }

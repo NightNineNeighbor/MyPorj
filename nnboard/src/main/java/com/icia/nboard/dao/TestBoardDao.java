@@ -21,7 +21,7 @@ import com.icia.nboard.vo.Board;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="file:src/main/webapp/WEB-INF/spring/**/*-context.xml")
-@WebAppConfiguration
+//@WebAppConfiguration
 public class TestBoardDao {
 	@Autowired BoardDao	dao;
 	private Board board;
@@ -72,6 +72,18 @@ public class TestBoardDao {
 		dao.putLikeUpList(map);
 		
 		assertThat(dao.wasLikeUp(map).equals("id"), is(true));
+	}
+	
+	@Test
+	public void specificTest() {
+		List<Board> list = dao.specificRead(2, 5);
+		assertThat(list.size(), is(4));
+	}
+	
+	@Test
+	public void countTest() {
+		List<Board> list = dao.getAll();
+		assertThat(list.size(),is(dao.count()));
 	}
 
 }

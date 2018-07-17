@@ -20,6 +20,22 @@
 	<select id="getAll" resultType="board">
 		select bno, writer, title, content, write_date writeDate, read_cnt readCnt, like_cnt likeCnt from board order by bno desc
 	</select>
+	<select id="count" resultType="int">
+		<!-- index_ffs를 인덱스를 블록단위로 읽는다
+			 단 뒤에 컬럼이 인덱스에 해당하는 컬럼만 와야 적용된다
+		 -->
+		select /*+ index_ffs(board board_pk_bno) */ count(bno) from board		
+	</select>
+	<select id="specificRead" parameterType="map" resultType="board">
+	<![CDATA[
+		select * from
+		(select rownum rnum, b.* from 
+			(select /*+ index_desc(board board_pk_bno) */ bno, writer, title, write_date writeDate, like_cnt likeCnt, content, 
+			read_cnt readCnt from board) b
+		where rownum<=#{endRowNum}) 
+	where rnum>=#{startRowNum}
+	]]>
+	</select>
 	<select id="wasLikeUp" parameterType="map" resultType="string">
 		select id from like_up_list where bno=#{bno} and id=#{id} and rownum=1
 	</select>

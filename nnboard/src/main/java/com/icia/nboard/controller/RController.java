@@ -23,7 +23,7 @@ public class RController {
 	@Autowired ReplyDao dao;
 	@Autowired ObjectMapper mapper;
 	
-	@RequestMapping(value = "/reply/{bno}", method=RequestMethod.GET)
+	@RequestMapping(path = "/reply/{bno}", method=RequestMethod.GET)
 	public List<Reply> read(@PathVariable("bno") int bno) {
 		return dao.read(bno);
 	}
@@ -33,8 +33,6 @@ public class RController {
 		dao.create(new Reply(0, bno, principal.getName(), content));
 		return principal.getName()+"'s reply create success";
 	}
-	
-	
 	
 	@GetMapping("/hello")
 	public String sayHello() {
